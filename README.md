@@ -4,7 +4,9 @@ A collection of helpers functions for a better debugging experience.
 
 ## Breakpoint Criteria
 
-Inspired by [GDB's convience functions](https://sourceware.org/gdb/current/onlinedocs/gdb/Convenience-Funs.html), these functions allowed specific criteria to be placed on a breakpoint. A common example is only stopping at a breakpoint when called by another specific function. These criteria are all added via `breakpoint command add`.
+Inspired by [GDB's convience functions](https://sourceware.org/gdb/current/onlinedocs/gdb/Convenience-Funs.html), these functions allowed specific criteria to be placed on a breakpoint. A common example is only stopping at a breakpoint when called by another specific function.
+
+These criteria are all added via `breakpoint command add` and change an existing breakpoint. This requires knowing the "`breakpt-id`" of the breakpoint you want to change. To see the list of existing breakpoints and their IDs, run `breakpoint list`. The examples below all use the same example breakpoint ID: 10.
 
 The types of criteria are:
 
@@ -19,10 +21,10 @@ The `caller_is` and `caller_matches` helpers are used to make a breakpoint stop 
 Examples:
 
 ```
-breakpoint command add -F 'caller_is("someFunction")'
-breakpoint command add -F 'not caller_is("someFunction")'
-breakpoint command add -F 'caller_is("-[SomeClass theMethod:]")'
-breakpoint command add -F 'caller_matches("SomeClass")'
+breakpoint command add -F 'caller_is("someFunction")' 10
+breakpoint command add -F 'not caller_is("someFunction")' 10
+breakpoint command add -F 'caller_is("-[SomeClass theMethod:]")' 10
+breakpoint command add -F 'caller_matches("SomeClass")' 10
 ```
 
 In some cases, you'll want a breakpoint to stop based on the library (module) that called it. The `caller_from` helper does just this.
@@ -30,8 +32,8 @@ In some cases, you'll want a breakpoint to stop based on the library (module) th
 Examples:
 
 ```
-breakpoint command add -F 'caller_from("UIKit")'
-breakpoint command add -F 'not caller_from("MyAppName")'
+breakpoint command add -F 'caller_from("UIKit")' 10
+breakpoint command add -F 'not caller_from("MyAppName")' 10
 ```
 
 ### Call Stack
@@ -41,10 +43,10 @@ The `any_caller_is` and `any_caller_matches` helper functions are just like `cal
 Examples:
 
 ```
-breakpoint command add -F 'any_caller_is("someFunction")'
-breakpoint command add -F 'not any_caller_is("someFunction")'
-breakpoint command add -F 'any_caller_is("-[SomeClass theMethod:]")'
-breakpoint command add -F 'any_caller_matches("SomeClass")'
+breakpoint command add -F 'any_caller_is("someFunction")' 10
+breakpoint command add -F 'not any_caller_is("someFunction")' 10
+breakpoint command add -F 'any_caller_is("-[SomeClass theMethod:]")' 10
+breakpoint command add -F 'any_caller_matches("SomeClass")' 10
 ```
 
 When you want a breakpoint to stop when library (module) is or is not in the call stack, use `any_caller_from`.
@@ -52,8 +54,8 @@ When you want a breakpoint to stop when library (module) is or is not in the cal
 Examples:
 
 ```
-breakpoint command add -F 'any_caller_from("UIKit")'
-breakpoint command add -F 'not any_caller_from("MyAppName")'
+breakpoint command add -F 'any_caller_from("UIKit")' 10
+breakpoint command add -F 'not any_caller_from("MyAppName")' 10
 ```
 
 ### Threads
@@ -63,9 +65,9 @@ The `called_on` helper function is used to stop only when a breakpoint is hit fr
 Examples:
 
 ```
-breakpoint command add -F 'called_on(1)'
-breakpoint command add -F 'not called_on(1)'
-breakpoint command add -F 'not called_on("com.banana.eventfetch-thread")'
+breakpoint command add -F 'called_on(1)' 10
+breakpoint command add -F 'not called_on(1)' 10
+breakpoint command add -F 'not called_on("com.banana.eventfetch-thread")' 10
 ```
 
 ## Installation
