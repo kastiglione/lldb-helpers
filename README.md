@@ -6,6 +6,12 @@ A collection of helpers functions for a better debugging experience.
 
 Inspired by [GDB's convience functions](https://sourceware.org/gdb/current/onlinedocs/gdb/Convenience-Funs.html), these functions allowed specific criteria to be placed on a breakpoint. A common example is only stopping at a breakpoint when called by another specific function. These criteria are all added via `breakpoint command add`.
 
+The types of criteria are:
+
+1. [Caller Function](#caller-function)
+2. [Call Stack](#call-stack)
+3. [Threads](#threads)
+
 ### Caller Function
 
 The `caller_is` and `caller_matches` helpers are used to make a breakpoint stop only when called by a specific function. Or likewise, to stop when not called by a specific function. Use `caller_is` for an exact caller name, and use `caller_matches` to stop based on substring or regex of the calling function. Prefix the function with `not` to stop when the caller *does not* match the name.
