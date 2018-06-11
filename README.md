@@ -50,6 +50,18 @@ breakpoint command add -F 'any_caller_from("UIKit")'
 breakpoint command add -F 'not any_caller_from("MyAppName")'
 ```
 
+### Threads
+
+The `called_on` helper function is used to stop only when a breakpoint is hit from a specific thread or queue. LLDB breakpoints have the ability to specify a specifc thread (`--thread-index`) or queue (`--queue-name`), but there is no way to specify that a breakpoint *not* stop for a specific thread or queue. The `called_on` helper can do this, and takes either a thread index, for example `1` for the main thread, or takes a thread name or queue name.
+
+Examples:
+
+```
+breakpoint command add -F 'called_on(1)'
+breakpoint command add -F 'not called_on(1)'
+breakpoint command add -F 'not called_on("com.banana.eventfetch-thread")'
+```
+
 ## Installation
 
 1. Clone this repository to your prefrerred location
