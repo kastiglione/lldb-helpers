@@ -76,5 +76,5 @@ breakpoint command add -F 'not called_on("com.banana.eventfetch-thread")' 10
 2. Add this `import` command to your `~/.lldbinit`:
 
 ```
-command import ~/path/to/criteria.py
+command script import ~/path/to/criteria.py
 ```
