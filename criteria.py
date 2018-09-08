@@ -66,8 +66,8 @@ def any_caller_from(name):
     return check
 __builtin__.any_caller_from = any_caller_from
 
-# breakpoint command add -F 'called_on(1)'
-# breakpoint command add -F 'not called_on("thisThread")'
+# breakpoint command add -F 'not called_on(1)'
+# breakpoint command add -F 'called_on("thisThread")'
 def called_on(identifier):
     if isinstance(identifier, int):
         return lambda frame, loc, _: identifier == frame.thread.idx

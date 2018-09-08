@@ -65,9 +65,8 @@ The `called_on` helper function is used to stop only when a breakpoint is hit fr
 Examples:
 
 ```
-breakpoint command add -F 'called_on(1)'
 breakpoint command add -F 'not called_on(1)'
-breakpoint command add -F 'not called_on("com.banana.eventfetch-thread")'
+breakpoint command add -F 'called_on("com.banana.eventfetch-thread")'
 ```
 
 ## Installation
