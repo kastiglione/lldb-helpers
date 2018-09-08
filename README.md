@@ -1,6 +1,6 @@
 # lldb-helpers
 
-Functions that control when a breakpoint stops. These are especially useful for frequently called functions. The functions are also useful to catch programming mistakes, such as functions being called from the wrong thread.
+A collection of functions that control when a breakpoint stops. These are especially useful for frequently called functions. The functions are also useful to catch programming mistakes, such as functions being called from the wrong thread.
 
 Inspired by [GDB's convience functions](https://sourceware.org/gdb/current/onlinedocs/gdb/Convenience-Funs.html).
 
