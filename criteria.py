@@ -72,5 +72,5 @@ def called_on(identifier):
     if isinstance(identifier, int):
         return lambda frame, loc, _: identifier == frame.thread.idx
     else:
-        return lambda frame, loc, _: identifier in [frame.thread.name, frame.thread.queue]
+        return lambda frame, loc, _: identifier in (frame.thread.name, frame.thread.queue)
 __builtin__.called_on = called_on
