@@ -8,7 +8,12 @@ Inspired by [GDB's convience functions](https://sourceware.org/gdb/current/onlin
 
 These helper functions place various criteria on a breakpoint. A simple example is to make a breakpoint stop only when called by a certain function.
 
-This library introduces the `criteria` alias, which just runs `breakpoint command add -F`. The examples in this document show the `criteria` command, but if you prefer, you can directly use `breakpoint command add -F` instead.
+This library introduces the `criteria` alias, which just runs `breakpoint command add -F`. The examples in this document show the `criteria` alias, but if you prefer, you can directly use `breakpoint command add -F` instead. For example, these are exactly the same:
+
+```
+(lldb) criteria caller_is("main")
+(lldb) breakpoint command add -F 'caller_is("main")'
+```
 
 The types of criteria are:
 
