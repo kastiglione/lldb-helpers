@@ -8,6 +8,8 @@ Inspired by [GDB's convience functions](https://sourceware.org/gdb/current/onlin
 
 These helper functions place various criteria on a breakpoint. A simple example is to make a breakpoint stop only when called by a certain function.
 
+This library introduces the `criteria` alias, which just runs `breakpoint command add -F`. The examples in this document show the `criteria` command, but if you prefer, you can directly use `breakpoint command add -F` instead.
+
 The types of criteria are:
 
 1. [Caller](#caller)
@@ -21,10 +23,10 @@ The `caller_is` and `caller_matches` helpers are used to make a breakpoint stop 
 Examples:
 
 ```
-breakpoint command add -F 'caller_is("someFunction")'
-breakpoint command add -F 'not caller_is("someFunction")'
-breakpoint command add -F 'caller_is("-[SomeClass theMethod:]")'
-breakpoint command add -F 'caller_matches("SomeClass")'
+(lldb) criteria caller_is("someFunction")
+(lldb) criteria not caller_is("someFunction")
+(lldb) criteria caller_is("-[SomeClass theMethod:]")
+(lldb) criteria caller_matches("SomeClass")
 ```
 
 In some cases, you'll want a breakpoint to stop based on the library (module) of the caller. The `caller_from` helper does just this.
@@ -32,8 +34,8 @@ In some cases, you'll want a breakpoint to stop based on the library (module) of
 Examples:
 
 ```
-breakpoint command add -F 'caller_from("UIKit")'
-breakpoint command add -F 'not caller_from("MyAppName")'
+(lldb) criteria caller_from("UIKit")
+(lldb) criteria not caller_from("MyAppName")
 ```
 
 ### Stack
@@ -43,10 +45,10 @@ The `any_caller_is` and `any_caller_matches` helper functions are just like `cal
 Examples:
 
 ```
-breakpoint command add -F 'any_caller_is("someFunction")'
-breakpoint command add -F 'not any_caller_is("someFunction")'
-breakpoint command add -F 'any_caller_is("-[SomeClass theMethod:]")'
-breakpoint command add -F 'any_caller_matches("SomeClass")'
+(lldb) criteria any_caller_is("someFunction")
+(lldb) criteria not any_caller_is("someFunction")
+(lldb) criteria any_caller_is("-[SomeClass theMethod:]")
+(lldb) criteria any_caller_matches("SomeClass")
 ```
 
 When you want a breakpoint to stop when library (module) is or is not in the call stack, use `any_caller_from`.
@@ -54,8 +56,8 @@ When you want a breakpoint to stop when library (module) is or is not in the cal
 Examples:
 
 ```
-breakpoint command add -F 'any_caller_from("UIKit")'
-breakpoint command add -F 'not any_caller_from("MyAppName")'
+(lldb) criteria any_caller_from("UIKit")
+(lldb) criteria not any_caller_from("MyAppName")
 ```
 
 ### Threads
@@ -65,8 +67,8 @@ The `called_on` helper function is used to stop only when a breakpoint is hit fr
 Examples:
 
 ```
-breakpoint command add -F 'not called_on(1)'
-breakpoint command add -F 'called_on("com.banana.eventfetch-thread")'
+(lldb) criteria not called_on(1)
+(lldb) criteria called_on("com.banana.eventfetch-thread")
 ```
 
 ## Installation

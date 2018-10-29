@@ -76,3 +76,8 @@ def called_on(identifier):
             return identifier in (frame.thread.name, frame.thread.queue)
     return check
 __builtin__.called_on = called_on
+
+def __lldb_init_module(debugger, _):
+    interpreter = debugger.GetCommandInterpreter()
+    if not interpreter.AliasExists("criteria") and not interpreter.CommandExists("criteria"):
+        debugger.HandleCommand("command regex criteria 's/(.+)/breakpoint command add -F \"%1\"/'")
