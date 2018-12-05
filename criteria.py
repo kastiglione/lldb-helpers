@@ -1,4 +1,3 @@
-import re
 import __builtin__
 from itertools import islice
 
@@ -13,71 +12,58 @@ from itertools import islice
 # These functions were inspired by:
 # https://sourceware.org/gdb/current/onlinedocs/gdb/Convenience-Funs.html
 
+def break_criteria(predicate):
+    def decorator(*args):
+        def breakpoint_command(frame, location, _):
+            return predicate(frame, *args)
+        return breakpoint_command
+    setattr(__builtin__, predicate.__name__, decorator)
+    return decorator
+
 # breakpoint command add -F 'caller_is("theCaller")'
 # breakpoint command add -F 'not caller_is("theCaller")'
-def caller_is(name):
-    def check(frame, loc, _):
-        return frame.parent.name == name
-    return check
-__builtin__.caller_is = caller_is
+@break_criteria
+def caller_is(frame, symbol):
+    return frame.parent.name == symbol
 
 # breakpoint command add -F 'any_caller_is("someCaller")'
 # breakpoint command add -F 'not any_caller_is("someCaller")'
-def any_caller_is(name):
-    def check(frame, loc, _):
-        callers = islice(frame.thread, 1, None) # skip current frame
-        return any(f.name == name for f in callers)
-    return check
-__builtin__.any_caller_is = any_caller_is
+@break_criteria
+def any_caller_is(frame, symbol):
+    callers = islice(frame.thread, 1, None) # skip current frame
+    return any(f.name == symbol for f in callers)
 
-# breakpoint command add -F 'caller_matches("theCaller")'
-# breakpoint command add -F 'not caller_matches("theCaller")'
-def caller_matches(pattern):
-    regex = re.compile(pattern, re.I)
-    def check(frame, loc, _):
-        return regex.search(frame.parent.name) != None
-    return check
-__builtin__.caller_matches = caller_matches
+# breakpoint command add -F 'caller_contains("theCaller")'
+# breakpoint command add -F 'not caller_contains("theCaller")'
+@break_criteria
+def caller_contains(frame, substring):
+    return substring in frame.parent.name
 
-# breakpoint command add -F 'any_caller_matches("someCaller")'
-# breakpoint command add -F 'not any_caller_matches("someCaller")'
-def any_caller_matches(pattern):
-    regex = re.compile(pattern, re.I)
-    def check(frame, loc, _):
-        callers = islice(frame.thread, 1, None) # skip current frame
-        return any(regex.search(f.name) for f in callers)
-    return check
-__builtin__.any_caller_matches = any_caller_matches
+# breakpoint command add -F 'any_caller_contains("someCaller")'
+# breakpoint command add -F 'not any_caller_contains("someCaller")'
+@break_criteria
+def any_caller_contains(frame, substring):
+    callers = islice(frame.thread, 1, None) # skip current frame
+    return any(substring in f.name for f in callers)
 
-# breakpoint command add -F 'caller_from("thatLibrary")'
-# breakpoint command add -F 'not caller_from("thatLibrary")'
-def caller_from(name):
-    def check(frame, loc, _):
-        return frame.parent.module.file.basename == name
-    return check
-__builtin__.caller_from = caller_from
+# breakpoint command add -F 'caller_from("FrameworkKit")'
+# breakpoint command add -F 'not caller_from("libThat")'
+@break_criteria
+def caller_from(frame, module):
+    return frame.parent.module.file.basename == module
 
-# breakpoint command add -F 'any_caller_from("thatLibrary")'
-# breakpoint command add -F 'not any_caller_from("thatLibrary")'
-def any_caller_from(name):
-    def check(frame, loc, _):
-        callers = islice(frame.thread, 1, None) # skip current frame
-        return any(f.module.file.basename == name for f in callers)
-    return check
-__builtin__.any_caller_from = any_caller_from
+# breakpoint command add -F 'any_caller_from("FrameworkKit")'
+# breakpoint command add -F 'not any_caller_from("libThat")'
+@break_criteria
+def any_caller_from(frame, module):
+    callers = islice(frame.thread, 1, None) # skip current frame
+    return any(f.module.file.basename == module for f in callers)
 
 # breakpoint command add -F 'not called_on(1)'
-# breakpoint command add -F 'called_on("thisThread")'
-def called_on(identifier):
-    def check(frame, loc, _):
-        if isinstance(identifier, int):
-            return identifier == frame.thread.idx
-        else:
-            return identifier in (frame.thread.name, frame.thread.queue)
-    return check
-__builtin__.called_on = called_on
-
-def __lldb_init_module(debugger, _):
-    interpreter = debugger.GetCommandInterpreter()
-    if not interpreter.AliasExists("criteria") and not interpreter.CommandExists("criteria"):
-        debugger.HandleCommand("command regex criteria 's/(.+)/breakpoint command add -F \"%1\"/'")
+# breakpoint command add -F 'called_on("namedThread")'
+@break_criteria
+def called_on(frame, thread_id):
+    if isinstance(thread_id, int):
+        return thread_id == frame.thread.idx
+    else:
+        return thread_id in (frame.thread.name, frame.thread.queue)
