@@ -57,7 +57,7 @@ def any_caller_contains(frame, substring):
 # breakpoint command add -F 'not any_caller_matches("oneCaller|anotherCaller")'
 @break_criteria
 def any_caller_matches(frame, pattern):
-    regex = re.compile(pattern, re.IGNORECASE)
+    regex = re.compile(pattern)
     callers = islice(frame.thread, 1, None) # skip current frame
     return any(regex.search(f.name) for f in callers)
 

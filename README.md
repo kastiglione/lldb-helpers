@@ -25,6 +25,8 @@ Examples:
 (lldb) breakpoint command add -F 'not caller_is("someFunction")'
 (lldb) breakpoint command add -F 'caller_is("-[SomeClass theMethod:]")'
 (lldb) breakpoint command add -F 'caller_contains("SomeClass")'
+(lldb) breakpoint command add -F 'caller_matches("OneClass|someFunction")'
+(lldb) breakpoint command add -F 'not caller_matches("OneClass|someFunction")'
 ```
 
 In some cases, you'll want a breakpoint to stop based on the library (module) of the caller. The `caller_from` helper does just this.
@@ -47,6 +49,8 @@ Examples:
 (lldb) breakpoint command add -F 'not any_caller_is("someFunction")'
 (lldb) breakpoint command add -F 'any_caller_is("-[SomeClass theMethod:]")'
 (lldb) breakpoint command add -F 'any_caller_contains("SomeClass")'
+(lldb) breakpoint command add -F 'any_caller_matches("OneClass|someFunction")'
+(lldb) breakpoint command add -F 'not any_caller_matches("OneClass|someFunction")'
 ```
 
 When you want a breakpoint to stop when library (module) is or is not in the call stack, use `any_caller_from`.
