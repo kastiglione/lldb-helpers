@@ -52,21 +52,26 @@ def any_caller_contains(frame, substring):
     return any(substring in f.name for f in callers)
 
 _CACHED_REGEX = {}
+def _get_regex(pattern):
+    global _CACHED_REGEX
+    regex = _CACHED_REGEX.get(pattern)
+    if not regex:
+        regex = re.compile(pattern)
+        _CACHED_REGEX[pattern] = regex
+    return regex
 
 # breakpoint command add -F 'caller_matches("thisCaller|thatCaller")'
 # breakpoint command add -F 'not caller_matches("thisCaller|thatCaller")'
 @break_criteria
 def caller_matches(frame, pattern):
-    global _CACHED_REGEX
-    regex = _CACHED_REGEX.get(pattern) or re.compile(pattern)
+    regex = _get_regex(pattern)
     return regex.search(frame.parent.name) is not None
 
 # breakpoint command add -F 'any_caller_matches("oneCaller|anotherCaller")'
 # breakpoint command add -F 'not any_caller_matches("oneCaller|anotherCaller")'
 @break_criteria
 def any_caller_matches(frame, pattern):
-    global _CACHED_REGEX
-    regex = _CACHED_REGEX.get(pattern) or re.compile(pattern)
+    regex = _get_regex(pattern)
     callers = islice(frame.thread, 1, None) # skip current frame
     return any(regex.search(f.name) for f in callers)
 
