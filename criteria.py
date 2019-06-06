@@ -1,4 +1,8 @@
-import __builtin__
+try:
+    import __builtin__
+except ImportError:
+    import builtins
+    __builtin__ = builtins
 import re
 from itertools import islice
 
